@@ -1,0 +1,24 @@
+from sklearn.linear_model import Lasso, Ridge, RidgeCV
+from sklearn.datasets import load_diabetes
+from sklearn.preprocessing import StandardScaler
+
+# Load data
+data = load_diabetes()
+X = data.data
+y = data.target
+
+# Standardize features
+X = StandardScaler().fit_transform(X)
+
+# Lasso regression
+lasso = Lasso(alpha=0.5).fit(X, y)
+print("Lasso coefficients:", lasso.coef_)
+
+# Ridge regression
+ridge = Ridge(alpha=0.5).fit(X, y)
+print("Ridge coefficients:", ridge.coef_)
+
+# Ridge regression with cross-validation
+ridge_cv = RidgeCV(alphas=[0.1, 1.0, 10.0]).fit(X, y)
+print("RidgeCV coefficients:", ridge_cv.coef_)
+print("Best alpha for RidgeCV:", ridge_cv.alpha_)

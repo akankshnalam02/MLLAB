@@ -1,0 +1,68 @@
+Binary Logistic Regression
+
+from sklearn.linear_model import LogisticRegression
+from sklearn import datasets
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import accuracy_score
+
+# Load dataset and select first 100 samples
+iris = datasets.load_iris()
+features = iris.data[:100, :]
+target = iris.target[:100]
+
+# Standardize features
+features_standardized = StandardScaler().fit_transform(features)
+
+# Fit logistic regression model
+model = LogisticRegression(random_state=0)
+model.fit(features_standardized, target)
+
+# Predict and evaluate accuracy
+y_pred = model.predict(features_standardized)
+print(accuracy_score(y_pred, target))
+
+Multinomial Regression
+
+from sklearn.linear_model import LogisticRegression
+from sklearn import datasets
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import accuracy_score
+
+# Load dataset
+iris = datasets.load_iris()
+features = iris.data
+target = iris.target
+
+# Standardize features
+features_standardized = StandardScaler().fit_transform(features)
+
+# Fit multinomial logistic regression model
+model = LogisticRegression(random_state=0)
+model.fit(features_standardized, target)
+
+# Predict and evaluate accuracy
+y_pred = model.predict(features_standardized)
+print(accuracy_score(y_pred, target))
+
+Multinomial Logistic Regression (One vs Rest)
+
+from sklearn.linear_model import LogisticRegression
+from sklearn import datasets
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import accuracy_score
+
+# Load dataset
+iris = datasets.load_iris()
+features = iris.data
+target = iris.target
+
+# Standardize features
+features_standardized = StandardScaler().fit_transform(features)
+
+# Fit multinomial logistic regression (one-vs-rest)
+model = LogisticRegression(multi_class='ovr', random_state=0)
+model.fit(features_standardized, target)
+
+# Predict and evaluate accuracy
+y_pred = model.predict(features_standardized)
+print(accuracy_score(y_pred, target))

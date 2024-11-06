@@ -1,0 +1,26 @@
+import matplotlib.pyplot as plt
+from sklearn.decomposition import PCA
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
+from sklearn import datasets
+
+# Load dataset
+iris = datasets.load_iris()
+X, y = iris.data, iris.target
+colors, labels = ['blue', 'green', 'orange'], iris.target_names
+
+# PCA
+X_pca = PCA(n_components=2).fit_transform(X)
+print('PCA explained variance:', PCA(n_components=2).fit(X).explained_variance_ratio_)
+
+# LDA
+X_lda = LDA(n_components=2).fit_transform(X, y)
+
+# Plot PCA and LDA
+for X_transformed, title in [(X_pca, 'PCA'), (X_lda, 'LDA')]:
+    plt.figure()
+    for i, color in enumerate(colors):
+        plt.scatter(X_transformed[y == i, 0], X_transformed[y == i, 1], color=color, label=labels[i])
+    plt.legend()
+    plt.title(f'{title} of Iris Dataset')
+
+plt.show()

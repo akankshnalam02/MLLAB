@@ -1,0 +1,26 @@
+from sklearn.datasets import make_blobs
+from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+import matplotlib.pyplot as plt
+
+# Create dataset with 3 centers
+x, y = make_blobs(n_samples=300, centers=[[2,1], [-2,2], [-2,-2]], cluster_std=0.6)
+
+# Normalize the dataset
+x = StandardScaler().fit_transform(x)
+
+# Plot the normalized data
+plt.scatter(x[:, 0], x[:, 1])
+plt.show()
+
+# Apply KMeans clustering
+kmeans = KMeans(n_clusters=3)
+y2 = kmeans.fit_predict(x)
+
+# Plot clustered data
+plt.scatter(x[:, 0], x[:, 1], c=y2)
+plt.show()
+
+# Calculate and print silhouette score
+print("Silhouette Score:", silhouette_score(x, kmeans.labels_))

@@ -1,0 +1,67 @@
+Here’s a further simplified version of each code block, with reduced code length and preserved functionality for clarity and ease in Jupyter.
+
+1. One-Hot Encoding with pd.get_dummies
+
+import pandas as pd
+
+# DataFrame
+df = pd.DataFrame({'ID': [1, 2, 3, 4, 5], 'Category': ['A', 'B', 'A', 'C', 'B']})
+
+# One-hot encoding
+df = pd.get_dummies(df, columns=['Category'], drop_first=True)
+print(df)
+
+2. One-Hot Encoding with OneHotEncoder (from sklearn)
+
+import pandas as pd
+from sklearn.preprocessing import OneHotEncoder
+
+# DataFrame
+df = pd.DataFrame({'ID': [1, 2, 3, 4, 5], 'Category': ['A', 'B', 'A', 'C', 'B']})
+
+# Encoder and transformation
+encoder = OneHotEncoder(drop='first', sparse=False)
+encoded = encoder.fit_transform(df[['Category']])
+
+# Concatenate encoded columns
+df = pd.concat([df, pd.DataFrame(encoded, columns=encoder.get_feature_names_out(['Category']))], axis=1).drop('Category', axis=1)
+print(df)
+
+3. Label Encoding with Missing Values
+
+import pandas as pd
+
+# DataFrame with missing value
+df = pd.DataFrame({'ID': [1, 2, 3, 4, 5], 'Category': ['A', None, 'A', 'C', 'B']})
+
+# Label encoding
+df['Category_encoded'] = df['Category'].astype('category').cat.codes
+print(df)
+
+4. Ordinal and Label Encoding for Multiple Categorical Features
+
+import pandas as pd
+from sklearn.preprocessing import OrdinalEncoder, LabelEncoder
+
+# DataFrame
+df = pd.DataFrame({'Category': ['A', 'B', 'A', 'C', 'B'], 'Color': ['Red', 'Blue', 'Green', 'Red', 'Green'], 'Target': ['Yes', 'No', 'No', 'Yes', 'Yes']})
+
+# Ordinal and label encoding
+df[['Category', 'Color']] = OrdinalEncoder().fit_transform(df[['Category', 'Color']])
+df['Target'] = LabelEncoder().fit_transform(df['Target'])
+print(df)
+
+5. One-Hot Encoding with Sparse and Dense Options
+
+from sklearn.preprocessing import OneHotEncoder
+
+# Data
+data = [['red', 'small'], ['blue', 'large'], ['green', 'medium']]
+
+# Dense encoding
+print("Dense Encoding:\n", OneHotEncoder(sparse=False).fit_transform(data))
+
+# Sparse encoding
+print("Sparse Encoding:\n", OneHotEncoder(sparse=True).fit_transform(data))
+
+These are now even more concise and should work without errors in Jupyter Notebook. Let me know if this is easier to follow!

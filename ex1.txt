@@ -1,0 +1,93 @@
+I’ve simplified the code further, focusing only on the most essential parts without changing its core functionality. This version removes redundant lines and uses fewer variables for easier readability.
+
+# 1. Missing Values and Feature Scaling
+
+import pandas as pd
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
+
+# Load dataset
+data = pd.read_csv('dataset.csv')
+
+# Fill missing values in Age and Salary columns
+data['Age'].fillna(data['Age'].mean(), inplace=True)
+data['Salary'].fillna(data['Salary'].mean(), inplace=True)
+
+# Scale Age and Salary using MinMax and Standard Scalers
+data[['Age_MinMax', 'Salary_MinMax']] = MinMaxScaler().fit_transform(data[['Age', 'Salary']])
+data[['Age_Standard', 'Salary_Standard']] = StandardScaler().fit_transform(data[['Age', 'Salary']])
+
+# Show the data with new columns
+print(data)
+
+# 2. Pearson Correlation for Feature Selection
+
+import pandas as pd
+
+# Create dataset
+data = {
+    'Monthly_Bill_Amount': [100, 150, 200, 120, 180],
+    'Total_Minutes_of_Usage': [500, 700, 800, 550, 750],
+    'Num_Customer_Service_Calls': [3, 5, 2, 4, 6],
+    'Contract_Length': [12, 24, 6, 18, 9],
+    'Age_of_Customer': [30, 40, 25, 35, 28],
+    'Customer_Satisfaction_Score': [4, 3, 5, 2, 4],
+    'Churn': [0, 1, 0, 1, 0]
+}
+
+df = pd.DataFrame(data)
+
+# Calculate correlation of each feature with 'Churn'
+corr = df.corr()['Churn']
+print("Correlation with Churn (>|0.7|):", corr[abs(corr) > 0.7])
+
+# Find pairs of features with high correlation
+high_corr_pairs = [(i, j) for i in df.columns for j in df.columns if i != j and abs(df[i].corr(df[j])) > 0.7]
+print("Highly Correlated Pairs:", high_corr_pairs)
+
+# 3. Chi-Square Test for Feature Selection
+
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OrdinalEncoder, LabelEncoder
+from sklearn.feature_selection import SelectKBest, chi2
+import matplotlib.pyplot as plt
+
+# Split data into inputs (X) and target (y)
+X = df.drop('Churn', axis=1)
+y = df['Churn']
+X_train, _, y_train, _ = train_test_split(X, y, test_size=0.33, random_state=1)
+
+# Encode features and target for chi-square test
+X_train_enc = OrdinalEncoder().fit_transform(X_train)
+y_train_enc = LabelEncoder().fit_transform(y_train)
+
+# Calculate chi-square scores
+chi_scores = SelectKBest(chi2, k='all').fit(X_train_enc, y_train_enc).scores_
+print("Chi-Square Scores:", chi_scores)
+
+# Plot chi-square scores
+plt.bar(range(len(chi_scores)), chi_scores)
+plt.show()
+
+# 4. Mutual Information and Wrapper Method
+
+from sklearn.feature_selection import SelectKBest, mutual_info_classif
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.feature_selection import SequentialFeatureSelector
+from sklearn.datasets import load_iris
+import matplotlib.pyplot as plt
+
+# Mutual Information scores for features in dataset
+mutual_info_scores = SelectKBest(mutual_info_classif, k='all').fit(X_train_enc, y_train_enc).scores_
+print("Mutual Information Scores:", mutual_info_scores)
+
+# Plot mutual information scores
+plt.bar(range(len(mutual_info_scores)), mutual_info_scores)
+plt.show()
+
+# Wrapper method with Sequential Feature Selection using K-Nearest Neighbors
+iris = load_iris()
+sfs = SequentialFeatureSelector(KNeighborsClassifier(n_neighbors=3), n_features_to_select=3).fit(iris.data, iris.target)
+selected_features = [iris.feature_names[i] for i, x in enumerate(sfs.get_support()) if x]
+print("Selected Features:", selected_features)
+
+This version is straightforward, with all necessary functionality, and is well-suited for a beginner level.

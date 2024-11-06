@@ -1,0 +1,58 @@
+# Import libraries
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestRegressor
+from sklearn import datasets
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn import metrics
+from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt
+
+# 1. Random Forest Regressor
+data = pd.read_csv('wineQualityReds.csv')
+X = data.drop('quality', axis=1)
+y = data['quality']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)
+
+rf = RandomForestRegressor(n_estimators=1000, random_state=42)
+rf.fit(X_train, y_train)
+preds = rf.predict(X_test)
+mae = np.mean(abs(preds - y_test))
+print('MAE:', round(mae, 2))
+
+# 2. K-Nearest Neighbors (KNN)
+wine = datasets.load_wine()
+X_train, X_test, y_train, y_test = train_test_split(wine.data, wine.target, test_size=0.3, random_state=42)
+
+knn = KNeighborsClassifier(n_neighbors=5)
+knn.fit(X_train, y_train)
+y_pred = knn.predict(X_test)
+
+print("Accuracy:", metrics.accuracy_score(y_test, y_pred))
+print(metrics.confusion_matrix(y_test, y_pred))
+print(metrics.classification_report(y_test, y_pred))
+
+# Error rate for K values
+errors = []
+for k in range(1, 40):
+    knn = KNeighborsClassifier(n_neighbors=k)
+    knn.fit(X_train, y_train)
+    errors.append(np.mean(knn.predict(X_test) != y_test))
+
+plt.plot(range(1, 40), errors, marker='o', color='red')
+plt.title('Error Rate vs. K Value')
+plt.xlabel('K Value')
+plt.ylabel('Error Rate')
+plt.show()
+
+# 3. KMeans Clustering
+X, _ = make_blobs(n_samples=300, centers=4, cluster_std=0.60, random_state=0)
+kmeans = KMeans(n_clusters=4, n_init='auto', random_state=42)
+y_kmeans = kmeans.fit_predict(X)
+
+plt.scatter(X[:, 0], X[:, 1], c=y_kmeans, s=50, cmap='viridis')
+centers = kmeans.cluster_centers_
+plt.scatter(centers[:, 0], centers[:, 1], c='black', s=200, alpha=0.5)
+plt.title('KMeans Clustering')
+plt.show()

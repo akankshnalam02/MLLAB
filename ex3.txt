@@ -1,0 +1,101 @@
+Here are the programs rewritten with direct print statements instead of f-strings:
+
+Linear Regression (Simple)
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+def estimate_coef(x, y):
+    n = np.size(x)  # number of observations
+    m_x, m_y = np.mean(x), np.mean(y)  # means of x and y
+    SS_xy = np.sum(y * x) - n * m_y * m_x  # cross-deviation
+    SS_xx = np.sum(x * x) - n * m_x * m_x  # deviation about x
+
+    b_1 = SS_xy / SS_xx  # slope
+    b_0 = m_y - b_1 * m_x  # intercept
+    return b_0, b_1
+
+def plot_regression_line(x, y, b):
+    plt.scatter(x, y, color="m", marker="o", s=30)  # actual points
+    y_pred = b[0] + b[1] * x  # predicted response vector
+    plt.plot(x, y_pred, color="g")  # regression line
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.show()
+
+def main():
+    # Data
+    x = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+    y = np.array([2, 1, 5, 3, 6, 4, 9, 10, 11, 8])
+    
+    # Estimating coefficients
+    b = estimate_coef(x, y)
+    print("Estimated coefficients:")
+    print("b_0 =", b[0])
+    print("b_1 =", b[1])
+
+    # Plotting regression line
+    plot_regression_line(x, y, b)
+
+if _name_ == "_main_":
+    main()
+
+Linear Regression with Scikit-Learn
+
+from sklearn.linear_model import LinearRegression
+import numpy as np
+
+# Data
+x = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).reshape((-1, 1))
+y = np.array([2, 1, 5, 3, 6, 4, 9, 10, 11, 8])
+
+# Fitting the model
+model = LinearRegression().fit(x, y)
+
+# Output
+print("Coefficient of Determination (R^2) =", model.score(x, y))
+print("Linear regression coefficient =", model.coef_[0])
+print("Linear regression intercept =", model.intercept_)
+
+# Making predictions
+z = np.array([5, 15, 25, 35, 45, 55]).reshape((-1, 1))
+print("Predictions for new data:", model.predict(z))
+
+Multiple Linear Regression (50 Startups)
+
+import numpy as np
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.metrics import r2_score
+
+# Load dataset
+dataset = pd.read_csv('50_Startups.csv')
+
+# Data preprocessing
+X = dataset.iloc[:, :-1]  # features
+y = dataset.iloc[:, 4]    # target
+
+# One-hot encoding categorical variable 'State'
+X = pd.get_dummies(X, drop_first=True)
+
+# Splitting the dataset
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+# Fitting the model
+regressor = LinearRegression()
+regressor.fit(X_train, y_train)
+
+# Predicting the results
+y_pred = regressor.predict(X_test)
+
+# Outputs
+print("Predicted values:", y_pred)
+print("Actual values:", y_test.values)
+print("Intercept:", regressor.intercept_)
+print("Coefficients:", regressor.coef_)
+
+# R-squared scores
+print("R^2 for Test Data =", r2_score(y_test, y_pred))
+print("R^2 for Training Data =", r2_score(y_train, regressor.predict(X_train)))
